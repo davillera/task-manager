@@ -1,0 +1,158 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Task Manager API",
+    "description": "API for Task Management"
+  },
+  "host": "localhost:3000",
+  "basePath": "/api",
+  "schemes": ["http"],
+  "paths": {
+    "/users/register": {
+      "post": {
+        "summary": "Registrar un nuevo usuario",
+        "description": "Registra un nuevo usuario en la aplicación.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password123"
+                }
+              },
+              "required": ["email", "password"]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Usuario creado con éxito"
+          },
+          "400": {
+            "description": "El correo ya está en uso"
+          },
+          "500": {
+            "description": "Error al crear el usuario"
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "summary": "Iniciar sesión",
+        "description": "Inicia sesión en la aplicación y obtiene un token JWT.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password123"
+                }
+              },
+              "required": ["email", "password"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inicio de sesión exitoso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Inicio de sesión exitoso"
+                },
+                "token": {
+                  "type": "string",
+                  "example": "jwt-token"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales incorrectas"
+          },
+          "500": {
+            "description": "Error al iniciar sesión"
+          }
+        }
+      }
+    },
+    "/users/change-password": {
+      "post": {
+        "summary": "Cambiar contraseña",
+        "description": "Permite a un usuario cambiar su contraseña.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@example.com"
+                },
+                "oldPassword": {
+                  "type": "string",
+                  "example": "oldpassword123"
+                },
+                "newPassword": {
+                  "type": "string",
+                  "example": "newpassword456"
+                }
+              },
+              "required": ["email", "oldPassword", "newPassword"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contraseña actualizada con éxito"
+          },
+          "401": {
+            "description": "Contraseña actual incorrecta"
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          },
+          "500": {
+            "description": "Error al cambiar la contraseña"
+          }
+        }
+      }
+    },
+    "/tareas": {
+      "get": {
+        "summary": "Obtener todas las tareas",
+        "description": "Devuelve una lista de todas las tareas.",
+        "responses": {
+          "200": {
+            "description": "Lista de tareas"
+          }
+        }
+      }
+    }
+  }
+}
