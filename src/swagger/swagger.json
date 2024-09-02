@@ -8,9 +8,24 @@
   "host": "localhost:3000",
   "basePath": "/api",
   "schemes": ["http"],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Endpoints relacionados con la autenticación de usuarios"
+    },
+    {
+      "name": "Task",
+      "description": "Endpoints relacionados con la gestión de Task"
+    },
+    {
+      "name": "Comments",
+      "description": "Endpoints relacionados con la gestión de Comments"
+    }
+  ],
   "paths": {
     "/users/register": {
       "post": {
+        "tags": ["Auth"],
         "summary": "Registrar un nuevo usuario",
         "description": "Registra un nuevo usuario en la aplicación.",
         "parameters": [
@@ -49,6 +64,7 @@
     },
     "/users/login": {
       "post": {
+        "tags": ["Auth"],
         "summary": "Iniciar sesión",
         "description": "Inicia sesión en la aplicación y obtiene un token JWT.",
         "parameters": [
@@ -100,6 +116,7 @@
     },
     "/users/change-password": {
       "post": {
+        "tags": ["Auth"],
         "summary": "Cambiar contraseña",
         "description": "Permite a un usuario cambiar su contraseña.",
         "parameters": [
@@ -143,13 +160,344 @@
         }
       }
     },
-    "/tareas": {
+    "/tasks": {
+      "post": {
+        "tags": ["Task"],
+        "summary": "Crear una nueva tarea",
+        "description": "Crea una nueva tarea para el usuario autenticado.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "example": "Nueva tarea"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Descripción de la tarea"
+                }
+              },
+              "required": ["title", "description"]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Tarea creada con éxito"
+          },
+          "500": {
+            "description": "Error al crear la tarea"
+          }
+        }
+      },
       "get": {
-        "summary": "Obtener todas las tareas",
-        "description": "Devuelve una lista de todas las tareas.",
+        "tags": ["Task"],
+        "summary": "Obtener todas las Task",
+        "description": "Devuelve una lista de todas las Task del usuario autenticado.",
         "responses": {
           "200": {
-            "description": "Lista de tareas"
+            "description": "Lista de Task",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Tarea 1"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Descripción de la tarea 1"
+                  },
+                  "completed": {
+                    "type": "boolean",
+                    "example": false
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error al obtener las Task"
+          }
+        }
+      }
+    },
+    "/tasks/search": {
+      "get": {
+        "tags": ["Task"],
+        "summary": "Buscar Task",
+        "description": "Busca Task del usuario autenticado utilizando filtros como título, descripción y estado.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "description": "Texto de búsqueda para el título o descripción"
+          },
+          {
+            "name": "completed",
+            "in": "query",
+            "type": "boolean",
+            "required": false,
+            "description": "Filtrar por estado de completado"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados de la búsqueda",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Tarea 1"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Descripción de la tarea 1"
+                  },
+                  "completed": {
+                    "type": "boolean",
+                    "example": false
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error al realizar la búsqueda"
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "put": {
+        "tags": ["Task"],
+        "summary": "Actualizar una tarea",
+        "description": "Actualiza una tarea existente del usuario autenticado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID de la tarea"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "example": "Tarea actualizada"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Descripción actualizada"
+                },
+                "completed": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tarea actualizada con éxito"
+          },
+          "404": {
+            "description": "Tarea no encontrada o no tienes acceso"
+          },
+          "500": {
+            "description": "Error al actualizar la tarea"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Task"],
+        "summary": "Eliminar una tarea",
+        "description": "Elimina una tarea existente del usuario autenticado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID de la tarea"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Tarea eliminada con éxito"
+          },
+          "404": {
+            "description": "Tarea no encontrada o no tienes acceso"
+          },
+          "500": {
+            "description": "Error al eliminar la tarea"
+          }
+        }
+      }
+    },
+    "/comments": {
+      "post": {
+        "tags": ["Comments"],
+        "summary": "Crear un comentario",
+        "description": "Crea un nuevo comentario en una tarea.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "string",
+                  "example": "Este es un comentario"
+                },
+                "taskId": {
+                  "type": "string",
+                  "example": "1"
+                }
+              },
+              "required": ["content", "taskId"]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Comentario creado con éxito"
+          },
+          "404": {
+            "description": "Tarea no encontrada"
+          },
+          "500": {
+            "description": "Error al crear el comentario"
+          }
+        }
+      }
+    },
+    "/comments/task/{taskId}": {
+      "get": {
+        "tags": ["Comments"],
+        "summary": "Obtener Comments por tarea",
+        "description": "Obtiene todos los Comments de una tarea específica.",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID de la tarea"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de Comments",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "example": "Comentario 1"
+                  },
+                  "taskId": {
+                    "type": "string",
+                    "example": "1"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tarea no encontrada"
+          },
+          "500": {
+            "description": "Error al obtener los Comments"
+          }
+        }
+      }
+    },
+    "/comments/{id}": {
+      "put": {
+        "tags": ["Comments"],
+        "summary": "Actualizar un comentario",
+        "description": "Actualiza un comentario existente en una tarea.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID del comentario"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "string",
+                  "example": "Comentario actualizado"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comentario actualizado con éxito"
+          },
+          "404": {
+            "description": "Comentario no encontrado o no tienes acceso"
+          },
+          "500": {
+            "description": "Error al actualizar el comentario"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Comments"],
+        "summary": "Eliminar un comentario",
+        "description": "Elimina un comentario existente en una tarea.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID del comentario"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Comentario eliminado con éxito"
+          },
+          "404": {
+            "description": "Comentario no encontrado o no tienes acceso"
+          },
+          "500": {
+            "description": "Error al eliminar el comentario"
           }
         }
       }
