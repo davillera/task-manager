@@ -3,17 +3,15 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const isProduction = process.env.NODE_ENV === 'production';
-
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
   host: process.env.DB_HOST,
   dialect: 'postgres',
-  dialectOptions: isProduction ? {
+  dialectOptions: {
     ssl: {
-      require: true,
-      rejectUnauthorized: false
+      require: true, // Requerir SSL
+      rejectUnauthorized: false // Puedes configurarlo según tus necesidades de seguridad
     }
-  } : {},
+  },
   logging: true,
   port: process.env.DB_PORT
 });
