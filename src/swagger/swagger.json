@@ -20,6 +20,10 @@
     {
       "name": "Comments",
       "description": "Endpoints relacionados con la gestión de Comments"
+    },
+    {
+      "name": "Image",
+      "description": "Endpoints relacionados con la gestión de Imágenes"
     }
   ],
   "paths": {
@@ -498,6 +502,65 @@
           },
           "500": {
             "description": "Error al eliminar el comentario"
+          }
+        }
+      }
+    },
+    "/images": {
+      "post": {
+        "tags": ["Image"],
+        "summary": "Subir una imagen",
+        "description": "Sube una imagen y guarda la URL en la base de datos.",
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": true,
+            "type": "file",
+            "description": "La imagen a subir"
+          },
+          {
+            "name": "taskId",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "ID de la tarea asociada"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Imagen subida y URL guardada con éxito"
+          },
+          "400": {
+            "description": "No se subió el archivo o el tipo de archivo es inválido"
+          },
+          "500": {
+            "description": "Error al subir la imagen"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Image"],
+        "summary": "Eliminar una imagen",
+        "description": "Elimina una imagen del bucket S3 y su registro en la base de datos.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID de la imagen a eliminar"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Imagen eliminada con éxito"
+          },
+          "404": {
+            "description": "Imagen no encontrada"
+          },
+          "500": {
+            "description": "Error al eliminar la imagen"
           }
         }
       }
