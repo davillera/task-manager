@@ -31,8 +31,12 @@ Comment.belongsTo(Task, {
   onUpdate: 'CASCADE',
 });
 
+Task.hasMany(Image, { foreignKey: 'taskId' });
+Image.belongsTo(Task, { foreignKey: 'taskId' });
+
 module.exports = {
   User,
   Task,
-  Comment
+  Comment,
+  Image
 };
