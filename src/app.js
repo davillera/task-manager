@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const userRoutes = require('./routes/user');
 const taskRoutes = require('./routes/task');
-const imageRoute = require('./routes/image')
+const imageRoutes = require('./routes/image')
 const commentRoutes = require('./routes/comment')
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger/swagger.json');
@@ -26,9 +26,9 @@ app.use(express.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Rutas
-app.use('/users', userRoutes);
-app.use('/task', taskRoutes);
-app.use('/comments', commentRoutes);
-app.use('/image', imageRoute)
+app.use('/api/users', userRoutes);
+app.use('/api/tasks', taskRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/images', imageRoutes);
 
 module.exports = app
