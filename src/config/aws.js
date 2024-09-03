@@ -1,56 +1,15 @@
-const { S3Client, PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
 
-if (!process.env.AWS_BUCKET_REGION || !process.env.AWS_PUBLIC_ACCESS_KEY || !process.env.AWS_SECRET_KEY || !process.env.AWS_BUCKET_NAME) {
-  throw new Error("Missing required environment variables for AWS configuration");
-}
-
-const s3 = new S3Client({
-  region: process.env.AWS_BUCKET_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_PUBLIC_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_KEY,
-  },
-});
-
-async function uploadFile(file) {
-  const uploadParams = {
-    Bucket: process.env.AWS_BUCKET_NAME,
-    Key: `${Date.now()}_${file.originalname}`, 
+const uploadImageToS3 = async (file) => {
+  const params = {
+    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Key: `${Date.now()}_${file.originalname}`, // El nombre de la imagen en S3
     Body: file.buffer,
     ContentType: file.mimetype,
+    ACL: 'public-read', // Para que la imagen sea accesible públicamente
   };
 
-  console.log("Upload Params: ", uploadParams);
-
-  try {
-    const command = new PutObjectCommand(uploadParams);
-    const result = await s3.send(command);
-
-    console.log("File uploaded successfully:", result);
-
-    return `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_BUCKET_REGION}.amazonaws.com/${uploadParams.Key}`;
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    throw new Error("File upload failed");
-  }
-}
-
-async function deleteFile(fileUrl) {
-  const fileName = fileUrl.split("/").pop();
-
-  const deleteParams = {
-    Bucket: process.env.AWS_BUCKET_NAME,
-    Key: fileName,
-  };
-
-  try {
-    const command = new DeleteObjectCommand(deleteParams);
-    await s3.send(command);
-    console.log("File deleted successfully");
-  } catch (error) {
-    console.error("Error deleting file:", error);
-    throw new Error("File deletion failed");
-  }
-}
-
-module.exports = { uploadFile, deleteFile };
+  const data = await s3.upload(params).promise();
+  return data.Location; // Retorna la URL de la imagen subida
+};
