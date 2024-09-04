@@ -16,6 +16,9 @@ router.post('/', upload.single('file'), (req, res, next) => {
   next();
 }, imageController.uploadImage);
 
+router.get("/:taskId", imageController.getImages);
 router.delete('/:id', imageController.deleteImage);
+router.put('/:id', imageController.updateImage)
+
 
 module.exports = router;

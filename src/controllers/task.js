@@ -111,6 +111,7 @@ exports.updateTask = async (req, res) => {
     task.title = req.body.title || task.title;
     task.description = req.body.description || task.description;
     task.imageUrl = imageUrl;
+    task.completed = req.body.completed
 
     await task.save();
 

@@ -5,7 +5,7 @@
     "title": "Task Manager API",
     "description": "API for Task Management"
   },
-  "host": "localhost:3000",
+  "host": "3.135.64.218:3000",
   "basePath": "/api",
   "schemes": ["http"],
   "tags": [
